@@ -1,0 +1,24 @@
+---
+layout:     post
+title:      "基于android的order system"
+subtitle:   "仿 饿了么 App"
+date:       2016-05-14 09:00:00
+author:     "Bydas"
+header-img: "img/contact-bg.jpg"
+catalog: true
+tag:
+   - Android
+---
+
+> 分享
+
+之前來github建站，在這裡落腳，原本打算做一個瑣碎的生活博客，但是發現github本身是個分享代碼的平台，于是我决定把自己在学校的一些项目开源
+
+於是工科男先发一波 android代码
+
+[android-app](https://github.com/ShenDada/android-app)
+（App前端代码，后端未完善）
+
+如果有需要的同学可在项目中的readme-edits下创建分支进行修改然后提交
+
+**——Bydas' Code將致力於分享新穎想法、教程以及應用代碼**
