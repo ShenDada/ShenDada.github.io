@@ -5,6 +5,7 @@ subtitle:   "仿 饿了么 App"
 date:       2016-05-14 09:00:00
 author:     "Bydas"
 header-img: "img/contact-bg.jpg"
+catalog: true
 tag:
    - Android
 ---
@@ -15,7 +16,7 @@ tag:
 
 於是工科男先发一波 android代码
 
-https://github.com/ShenDada/android-app
+[android-app](https://github.com/ShenDada/android-app)
 （App前端代码，后端未完善）
 
 如果有需要的同学可在项目中的readme-edits下创建分支进行修改然后提交
