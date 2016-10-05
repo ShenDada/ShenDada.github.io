@@ -7,6 +7,7 @@ author:     "Bydas"
 header-img: "img/home-bg-o.jpg"
 tags:
     - github
+---
 # github基本功能
 1、Repository:放项目的仓库
 2、Fork：授权拷贝
