@@ -35,29 +35,42 @@ tags:
   * 显示 Initialized empty Git repository in $PROJECT/ .git/
 * 上述结果表示在当前目录下创建一个.git的隐藏目录，这个就是所谓的git仓库，此时的～/My_github文件夹，就是工作树。
 
+
 ## 提交（commit）
 
 
+
 接下来在本地仓库里添加一些文件，比如README或者提交一篇博文。进行如下操作
+
     $ git add README
     $ git commit -m "first commit" //提交到本地仓库，并没有提交到github上
+
 ### 连接 github 并上传repository
 
 首先在本地创建 ssh key
+
     $ ssh-keygen -t rsa -C "login@email"
+
 成功执行会在~/下生成.ssh文件夹，打开进去id_rsa.pub,复制里面的key
 
 回到github，进入Account Settings，左边选择SSH Keys,Add SSH Keys，title自命名，粘贴key,验证，在git bash下输入：
+
     $ ssh -T git@github.com
+
 如果是第一次会提示是否continue，输入 yes就会看到：
+
 You've successfully authenticated,but Github does not provide shell access.表示github连接成功
 
 设置远程连接 github:
+
     $ git remote add origin git@github.com:user_name/Mytest.git
 
 将本地仓库的文件上传到github上：
+
     $ git push origin master
+
 git push 表示推送到服务器
+
 git pull 命令则相反
 
 ## 总结
