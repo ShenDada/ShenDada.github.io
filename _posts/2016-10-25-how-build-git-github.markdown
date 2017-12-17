@@ -5,7 +5,10 @@ subtitle:   "How build git and github?"
 date:       2016-10-5 12:00:00
 author:     "Bydas"
 header-img: "img/home-bg-o.jpg"
+header-mask: 0.3
+catalog:    true
 tags:
+    - tools
     - github
 ---
 # github基本功能

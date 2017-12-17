@@ -1,40 +1,99 @@
 # Site settings
 title: Bydas Blog
+SEOTitle: 达标的博客 | Bydas Blog
 header-img: img/home-bg.jpg
-email: shendabiao@icloud.com
-description: "Done is better than perfec!"
-baseurl: ""
-url: ""
-twitter_username:
-github_username:  Bydas
-facebook_username:
-weibo_username:
-zhihu_username: 小沈同学
+email: bydas.shendada@gmail.com
+description: "关于工程师与开发者、哲学与作家 | 达标，Google & Android Mobile Developer，Software Engineer | 这里是 @Bydas达标 的个人博客，与你一起发现更大的世界。"
+keyword: "达标, Bydas达标, Bydas, 达标的博客, Bydas Blog, 博客, 个人网站, Mobile, Google, android, 高通, MTK"
+url: "http://shendada.github.io/"              # your host, for absolute URL
+baseurl: ""                                    # for example, '/blog' if your blog hosted on 'host/blog'
+
+
+
+# SNS settings
+RSS: false
+weibo_username:     Bydas_
+zhihu_username:     Bydas
+github_username:    shendada
+twitter_username:   Bydas
+#facebook_username:  
+# linkedin_username:  firstname-lastname-idxxxx
+
+
 
 # Build settings
-markdown: kramdown
-
-# markdown: redcarpet
-# redcarpet can auto highlight code, but the lack of header-id make the catalog impossible
-
-highlighter: pygments
+# from 2016, 'pygments' is unsupported on GitHub Pages. Use 'rouge' for highlighting instead.
+highlighter: rouge
 permalink: pretty
-paginate: 20
-exclude: ["less","node_modules","Gruntfile.js","package.json","README.md"]
+paginate: 10
+exclude: ["less","node_modules","Gruntfile.js","package.json","README.md","README.zh.md"]
+anchorjs: true                          # if you want to customize anchor. check out line:181 of `post.html`
 
-# use Github Flavored Markdown !important
+
+
+# Gems
+# from PR#40, to support local preview for Jekyll 3.0
+gems: [jekyll-paginate]
+
+
+
+# Markdown settings
+# replace redcarpet to kramdown,
+# although redcarpet can auto highlight code, the lack of header-id make the catalog impossible, so I switch to kramdown
 # document: http://jekyllrb.com/docs/configuration/#kramdown
-
+markdown: kramdown
 kramdown:
-  input: GFM
-  
-# Duoshuo settings
-duoshuo_username: das
-# Share component is depend on Comment so we can NOT use share only.
-duoshuo_share: true
- # set to false if you want to use Comment without Sharing
+  input: GFM                            # use Github Flavored Markdown !important
+
+
+
+# Disqus settings
+disqus_username: das shen
+
+# Netease setttings
+netease_comment: false
+
 
 
 # Analytics settings
-# Baidu Analytics
-ba_track_id: 169816b0df64b2c157a76cec431a3375
+# Baidu Analytics 
+# ba_track_id: [your track id]
+
+# Google Analytics
+ga_track_id: 'UA-110938571-1'            # Format: UA-xxxxxx-xx
+ga_domain: auto
+
+
+
+# Sidebar settings
+sidebar: true                           # whether or not using Sidebar.
+sidebar-about-description: "敲敲代码，读书写字，<br>离开世界之前，一切都是过程"
+sidebar-avatar: /img/avatar-hux.jpg      # use absolute URL, seeing it's used in both `/` and `/about/`
+
+
+
+# Featured Tags
+featured-tags: true                     # whether or not using Feature-Tags
+featured-condition-size: 1              # A tag will be featured if the size of it is more than this condition value
+
+
+
+# Progressive Web Apps
+chrome-tab-theme-color: "#000000"
+service-worker: true
+
+
+
+# Friends
+friends: [
+    {
+    #     title: "Su",
+    #     href: "http://su.gallery/"
+    # },{
+        title: "黄玄",
+        href: "https://huangxuan.me/"
+    },{
+        title: "Gityuan",
+        href: "http://gityuan.com/"
+    }
+]

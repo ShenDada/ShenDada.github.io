@@ -1,43 +1,51 @@
 ---
 layout: page
 title: "About"
-description: "Hey, this is Bydas."
-header-img: "img/about-bg.jpg"
+description: "Hey, this is Das."
+header-img: "img/about-bg-walle.jpg"
+multilingual: true
 ---
 
-<<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="http://music.163.com/outchain/player?type=2&id=28784401&auto=1&height=66"></iframe>
+<!-- Language Selector -->
+<select class="sel-lang" onchange= "onLanChange(this.options[this.options.selectedIndex].value)">
+    <option value="0" selected> 中文 Chinese </option>
+    <option value="1"> 英文 English </option>
+</select>
 
-<p><b>Undergraduate</b>，前排守护者，每节课坐第一排打卡累计两学期</p>
+<!-- Chinese Version -->
+<div class="zh post-container">
+    {% capture about_zh %}{% include about/zh.md %}{% endcapture %}
+    {{ about_zh | markdownify }}
+</div>
 
-<p>不折不扣的<b>网页 小白</b>，事实上做这个网站时，是如看天书一般翻阅了各种教程后，才折腾出来的</p>
-
-<p><b>文艺青年</b>，不打DOTA，不撸LOL，篮球3级，网球2级，立志读完图书馆的外国文学</p>
-
-<p><b>人类</b>，苦逼于<del>生活</del>，然而依旧读书写字，致力于与生活赤手空拳搏斗，最高理想与生活和平相处</p>
-
-<p><b>FBI Warning：</b>此人N重人格，请谨慎交往</p>
-
-<p>同学喊朕  <del>英俊潇洒、风流倜傥、玉树临风的</del> <b>沈彦祖</b></p>
-
-
+<!-- English Version -->
+<div class="en post-container">
+    {% capture about_en %}{% include about/en.md %}{% endcapture %}
+    {{ about_en | markdownify }}
+</div>
 
 
+{% if site.disqus_username %}
+<!-- disqus 评论框 start -->
+<div class="comment">
+    <div id="disqus_thread" class="disqus-thread">
 
+    </div>
+</div>
+<!-- disqus 评论框 end -->
 
-
-<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="{{page.id}}" data-title="{{page.title}}" data-url="{{page.url}}/about/"></div>
-<!-- 多说评论框 end -->
-<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
-var duoshuoQuery = {short_name:"Bydas"};
-	(function() {
-		var ds = document.createElement('script');
-		ds.type = 'text/javascript';ds.async = true;
-		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-		ds.charset = 'UTF-8';
-		(document.getElementsByTagName('head')[0]
-		 || document.getElementsByTagName('body')[0]).appendChild(ds);
-	})();
-	</script>
-<!-- 多说公共JS代码 end -->
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "{{site.disqus_username}}";
+    var disqus_identifier = "{{site.disqus_username}}/{{page.url}}";
+    var disqus_url = "{{site.url}}{{page.url}}";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+{% endif %}
