@@ -48,7 +48,7 @@ kramdown:
 
 
 # Disqus settings
-disqus_username: das shen
+disqus_username: bydas
 
 # Netease setttings
 netease_comment: false
@@ -97,3 +97,6 @@ friends: [
         href: "http://gityuan.com/"
     }
 ]
+
+# Catalog settings
+catalog: true
