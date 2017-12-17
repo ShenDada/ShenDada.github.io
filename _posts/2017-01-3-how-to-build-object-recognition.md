@@ -4,8 +4,11 @@ title:      "搭建基于树莓派和Tensorflow的无人机物体识别"
 subtitle:   "How build object recognition?"
 date:       2017-1-3 12:00:00
 author:     "Bydas"
-header-img: "img/guilinshanshui.jpg"
+header-img: "img/about-bg-o.jpg"
+header-mask: 0.3
+catalog: true
 tags:
+    - AI    
     - Tensorflow
 ---
 
@@ -23,8 +26,8 @@ tags:
 
 ## 图像识别
  - 题目来源
-&emsp;&emsp;人工智能（AI）已经进入一个新的蓬勃发展期。推动这一轮AI狂澜的是三大引擎，即深度学习（DL）、大数据和大规模并行计算，其中又以DL为核心。
-&emsp;&emsp;机器学习是当前科技的热门话题，物体识别作为机器学习领域的热点，该项目主要研究在除了人脸识别之外，扩展到在更大的图库中识别一个指定的物体，从而实现人工智能的要求。
+  &emsp;&emsp;人工智能（AI）已经进入一个新的蓬勃发展期。推动这一轮AI狂澜的是三大引擎，即深度学习（DL）、大数据和大规模并行计算，其中又以DL为核心。
+  &emsp;&emsp;机器学习是当前科技的热门话题，物体识别作为机器学习领域的热点，该项目主要研究在除了人脸识别之外，扩展到在更大的图库中识别一个指定的物体，从而实现人工智能的要求。
 
 - 设计要求
 
@@ -76,7 +79,7 @@ vncserver :1   # 启用 ，之后在 vnc client里输入 ip:1即可进入图形�
 
 ### &emsp;Download 换源
  - [镜像主页](https://lug.ustc.edu.cn/wiki/mirrors/help/raspbian)
-*几番尝试，还是觉得国内源的中科大靠谱*
+  *几番尝试，还是觉得国内源的中科大靠谱*
 
 ```
 #sudo vim /etc/apt/sources.list ,使内容变为
@@ -87,9 +90,9 @@ deb-src http://mirrors.ustc.edu.cn/raspbian/raspbian/ wheezy main non-free contr
 *执行 apt-get update 命令更新软件列表*
 
 ## Tensorflow 安装及测试
- 
+
 ### 安装
- 
+
 - 下载好 **轮子** 开始安装
 
 ```
@@ -106,10 +109,10 @@ sudo pip install tensorflow-0.9.0-cp27-none-linux_armv7l.whl
 *解压出来的文件*
 
 > classify_image_graph_def.pb
-cropped_panda.jpg
-imagenet_2012_challenge_label_map_proto.pbtxt；
-imagenet_synset_to_human_label_map.txt
-LICENSE
+> cropped_panda.jpg
+> imagenet_2012_challenge_label_map_proto.pbtxt；
+> imagenet_synset_to_human_label_map.txt
+> LICENSE
 
 - 加载模型
 
@@ -127,9 +130,9 @@ python /usr/local/lib/python2.7/dist-packages/tensorflow/models/image/imagenet/c
 - 如果所示如下则表示一切正常
 
 >giant panda, panda, panda bear, coon bear, Ailuropoda melanoleuca (score = 0.89233)
-indri, indris, Indri indri, Indri brevicaudatus (score = 0.00859)
-lesser panda, red panda, panda, bear cat, cat bear, Ailurus fulgens (score = 0.00264)
-custard apple (score = 0.00141)
-earthstar (score = 0.00107)
+>indri, indris, Indri indri, Indri brevicaudatus (score = 0.00859)
+>lesser panda, red panda, panda, bear cat, cat bear, Ailurus fulgens (score = 0.00264)
+>custard apple (score = 0.00141)
+>earthstar (score = 0.00107)
 
  ### 测试
