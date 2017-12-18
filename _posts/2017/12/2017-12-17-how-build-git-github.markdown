@@ -5,8 +5,6 @@ subtitle:   "How build git and github?"
 date:       2017-12-17 22:00:00
 author:     "Bydas"
 header-img: "img/home-bg-o.jpg"
-header-mask: 0.3
-catalog:    true
 tags:
     - tools
     - github
