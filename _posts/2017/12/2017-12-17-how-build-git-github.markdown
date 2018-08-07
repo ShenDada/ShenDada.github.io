@@ -64,13 +64,23 @@ You've successfully authenticated,but Github does not provide shell access.表�
 设置远程连接 github:
 
     $ git remote add origin git@github.com:user_name/Mytest.git
-* git pull : 当更换电脑可以重新按上述步骤建立一个 git 库，将博客的代码库拉到本地进行编辑
-* git push : 将修改后的文件推送到服务器，进行更新
+
+选择在 github 上仓库里 clone or download 中提示的地址
+
+    $ git pull : 当更换电脑可以重新按上述步骤建立一个 git 库，将博客的代码库拉到本地进行编辑
+    $ git push : 将修改后的文件推送到服务器，进行更新
+
+git pull 出现无法创建本地分支，无法与远程分支建立联系的情况
+
+`There is no tracking information for the current branch`
+
+` $ git checkout -b local_branch_name remote(origin/master)`
 
 将本地仓库的文件上传到github上：
 
     $ git push origin master
-* git push 出现 error : The requested URL returned error: 403
+
+git push 出现 error : The requested URL returned error: 403
 
   进入目录：.git/config
 
