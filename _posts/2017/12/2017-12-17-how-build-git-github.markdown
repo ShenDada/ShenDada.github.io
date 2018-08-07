@@ -87,7 +87,7 @@ git pull 出现无法创建本地分支，无法与远程分支建立联系的�
 
 可执行以下命令：将本地库推送到远程 dev 分支，再自行合入
 
-`$ git push origin logcal_branch_name remote_branch_name`
+`$ git push origin HEAD:remote_branch_name`
 
 git push 出现 error : The requested URL returned error: 403
 
