@@ -79,6 +79,15 @@ git pull 出现无法创建本地分支，无法与远程分支建立联系的�
 将本地仓库的文件上传到github上：
 
     $ git push origin master
+若从另外创建的本地分支直接执行以上命令，出现以下报错
+
+`error: src refspec master does not match any`
+
+`error: failed to push some refs to 'git@github.com:.`
+
+可执行以下命令：将本地库推送到远程 dev 分支，再自行合入
+
+`$ git push origin logcal_branch_name remote_branch_name`
 
 git push 出现 error : The requested URL returned error: 403
 
