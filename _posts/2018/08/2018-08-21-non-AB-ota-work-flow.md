@@ -4,7 +4,7 @@ title:      "non-A/B Recovery OTA 升级流程"
 subtitle:   "non-A/B OTA work flow,user guide"
 date:       2018-8-21 22:00:00
 author:     "Bydas"
-header-img: "img/home-bg-o.jpg"
+header-img: "img/home-bg-art.jpg"
 catalog: true
 tags:
     - recovery ota
@@ -49,7 +49,7 @@ Recovery 通过 /cache/recovery/ 目录下的文件与 main system 通信,常使
 - --update_package=root:path   // Main system 将这条命令写入时,代表系统需要升级，在进入 Recovery 模式后，将该文件中的命令读取并写入 BCB 中，然后进行相应的更新 update.zip 包的操作
 - --wipe_data // 擦除用户数据。擦除 data 分区时必须要擦除 cache 分区
 - --wipe_cache   // wipe cache(but not user data),then reboot
-- --set_encrypted_filesystem=on|off - enables  // diasables encrypted fs
+- --set_encrypted_filesystem=on/off   -enables  // diasables encrypted fs
 
 
 #### 2.1.2 通过BCB（Bootloader Control Block）
@@ -96,28 +96,34 @@ struct bootloader_message {
 ![image](http://ww1.sinaimg.cn/large/005xWQEggy1fu9b7ffzh9j30iq0cigm0.jpg)
 
 - 流程 1：bootloader 读取 BCB 中的 command 成员变量 ，若为 boot-recovery 启动 recovery,若 command 为空则启动 main system。
-- 流程 2-1：main system 可往 BCB 中的 command 字段写入 boot-recovery 或者往 recovery 字段 写入 –update_package= PATH, 注意 recovery 字段存放的是 recovry 模块的启动参数，一般包括升级包路径。其存储结构如下：第一行存放字符串“recovery”,第二行存放路径信息“–update_package=update.zip PATH”等。 因此，参数之间是以“\n”分割的。
-- 流程 2-2：先读取 BCB 然后读取 /cache/recovery/command，然后将后者重新写回 BCB，当 升级失败可重新读取 BCB 中的 command。在 finish_recovery 函数中，Recovery 又会清空 BCB 的 command 域和 recovery 域，这样确保重启后不再进入 Recovery 模式。
-- 流程 3-1：main system 往 /cache/recovery/command 中写入信息，也可从 /cache/recovery/intent 中读取 recovery 传给 main system 的 intent 字符串。
-- 流程 3-2：recovery 从 cache/recovery/command 中获取操作命令，并存放 recovery 过程的相关信息和 log。
-- 按键进入：从 reboot 到 Recovery 服务 从 Bootloader 开始如果检测到组合键按下，就以 Recovery 模式开始启动启动镜像是 recovery.img。这个镜像同 boot.img 类似，也包含了标准的内核和根文件系统。其后就与正常的启动系统类似，也是启动内核，然后启动文件系统。在进入文件系统后会执行 init，init 的配置文件是 recovery 下的 [init.rc](http://androidxref.com/8.0.0_r4/xref/bootable/recovery/etc/init.rc)，启动 recovery（/sbin/recovery）服务。
-- 服务重启异常进入：服务在4分钟内重启次数超过4次，则重启手机进入recovery模式，参考 [service.cpp](http://androidxref.com/8.0.0_r4/xref/system/core/init/service.cpp#Reap)
-```
-    // If we crash > 4 times in 4 minutes, reboot into recovery.
-    boot_clock::time_point now = boot_clock::now();
-    if ((flags_ & SVC_CRITICAL) && !(flags_ & SVC_RESTART)) {
-        if (now < time_crashed_ + 4min) {
-            if (++crash_count_ > 4) {
-                LOG(ERROR) << "critical process '" << name_ << "' exited 4 times in 4 minutes";
-                panic();
-            }
-        } else {
-            time_crashed_ = now;
-            crash_count_ = 1;
-        }
-    }
-```
 
+- 流程 2-1：main system 可往 BCB 中的 command 字段写入 boot-recovery 或者往 recovery 字段 写入 –update_package= PATH, 注意 recovery 字段存放的是 recovry 模块的启动参数，一般包括升级包路径。其存储结构如下：第一行存放字符串“recovery”,第二行存放路径信息“–update_package=update.zip PATH”等。 因此，参数之间是以“\n”分割的。
+
+- 流程 2-2：先读取 BCB 然后读取 /cache/recovery/command，然后将后者重新写回 BCB，当 升级失败可重新读取 BCB 中的 command。在 finish_recovery 函数中，Recovery 又会清空 BCB 的 command 域和 recovery 域，这样确保重启后不再进入 Recovery 模式。
+
+- 流程 3-1：main system 往 /cache/recovery/command 中写入信息，也可从 /cache/recovery/intent 中读取 recovery 传给 main system 的 intent 字符串。
+
+- 流程 3-2：recovery 从 cache/recovery/command 中获取操作命令，并存放 recovery 过程的相关信息和 log。
+
+- 按键进入：从 reboot 到 Recovery 服务 从 Bootloader 开始如果检测到组合键按下，就以 Recovery 模式开始启动启动镜像是 recovery.img。这个镜像同 boot.img 类似，也包含了标准的内核和根文件系统。其后就与正常的启动系统类似，也是启动内核，然后启动文件系统。在进入文件系统后会执行 init，init 的配置文件是 recovery 下的 [init.rc](http://androidxref.com/8.0.0_r4/xref/bootable/recovery/etc/init.rc)，启动 recovery（/sbin/recovery）服务。
+
+- 服务重启异常进入：服务在4分钟内重启次数超过4次，则重启手机进入recovery模式，参考 [service.cpp](http://androidxref.com/8.0.0_r4/xref/system/core/init/service.cpp#Reap)
+
+  ```
+      // If we crash > 4 times in 4 minutes, reboot into recovery.
+      boot_clock::time_point now = boot_clock::now();
+      if ((flags_ & SVC_CRITICAL) && !(flags_ & SVC_RESTART)) {
+          if (now < time_crashed_ + 4min) {
+              if (++crash_count_ > 4) {
+                  LOG(ERROR) << "critical process '" << name_ << "' exited 4 times in 4 minutes";
+                  panic();
+              }
+          } else {
+              time_crashed_ = now;
+              crash_count_ = 1;
+          }
+      }
+  ```
 ## 三、OTA 升级服务流程
 ### 3.1 应用层升级流程
 
@@ -136,22 +142,29 @@ struct bootloader_message {
 
 - 将升级包 push 进 data 分区，进入 recovery 模式：
 1. To initiate recovery, run the following adb commands:
-```
-adb root 
-adb push update.zip /data/update.zip
-adb shell mkdir /cache/recovery 
-```
+
+   ```
+   adb root 
+   adb push update.zip /data/update.zip
+   adb shell mkdir /cache/recovery 
+   ```
+
+
 2. Create a file called command as follows:
-```
-echo "--update_package=/data/update.zip" > command
-```
+
+   ```
+   echo "--update_package=/data/update.zip" > command
+   ```
+
+
 3. Run the following commands:
-```
-adb shell sync
-adb reboot recovery
-```
-The device reboots, updates all images, and reboots again. The logs for the last 
-recovery are located under /cache/recovery.
+
+   ```
+   adb shell sync
+   adb reboot recovery
+   ```
+   The device reboots, updates all images, and reboots again. The logs for the last 
+   recovery are located under /cache/recovery.
 
 ### 3.2 recovery 阶段升级服务流程
 
@@ -222,27 +235,35 @@ recovery 服务流程可从 recovery.cpp 中的 [main()](http://androidxref.com/
 execv(binary,args)，其执行的 update-binary 具体实现源码可参考 [updater.cpp](http://androidxref.com/8.0.0_r4/xref/bootable/recovery/updater/updater.cpp#59) 。
 
 1. 函数参数以及版本的检查：当前 updater binary API 所支持的版本号有 1，2，3 三个。
+
 2. 获取管道并打开：在执行此程序的过程中向该管道写入命令，用于通知其父进程根据命令去更新 UI 显示。
+
 3. 读取 updater-script 脚本：从 update.zip 包中将 updater-script 脚本读到一块动态内存中，供后面执行。
-```
-  ZipString script_name(SCRIPT_NAME);
-  ZipEntry script_entry;
-  int find_err = FindEntry(za, script_name, &script_entry);
-```
+
+   ```
+     ZipString script_name(SCRIPT_NAME);
+     ZipEntry script_entry;
+     int find_err = FindEntry(za, script_name, &script_entry);
+   ```
+
+
 4. Configure edify's functions：注册脚本中的语句处理函数，即识别脚本中命令的函数。主要有以下几类:
-```
-  RegisterBuiltins();   
-  //注册程序中控制流程的语句，如 ifelse、assert、abort、stdout 等
-  
-  RegisterInstallFunctions(); 
-  //实际安装过程中安装所需的功能函数，比如 mount、format、set_progress、set_perm 等
-  
-  RegisterBlockImageFunctions();
-  //与设备相关的额外添加項，在源码中并没有任何实现
-  
-  RegisterDeviceExtensions();
-  //结束注册
-```
+
+   ```
+     RegisterBuiltins();   
+     //注册程序中控制流程的语句，如 ifelse、assert、abort、stdout 等
+     
+     RegisterInstallFunctions(); 
+     //实际安装过程中安装所需的功能函数，比如 mount、format、set_progress、set_perm 等
+     
+     RegisterBlockImageFunctions();
+     //与设备相关的额外添加項，在源码中并没有任何实现
+     
+     RegisterDeviceExtensions();
+     //结束注册
+   ```
+
+
 5. Parse the script：调用 yy* 库函数解析脚本，并将解析后的内容存放到一个 Expr 类型的 python 类中。主要函数是 yy_scan_string() 和 yyparse()。
 6. Evaluate the parsed script：核心函数是 Evaluate（），它会调用其他的 callback 函数，而这些 callback 函数又会去调用 Evaluate 去解析不同的脚本片段，从而实现一个简单的脚本解释器。
 7. 错误信息提示：最后就是根据 Evaluate（）执行后的返回值，给出一些打印信息。
@@ -251,7 +272,8 @@ execv(binary,args)，其执行的 update-binary 具体实现源码可参考 [upd
 
 update-script 脚本格式是 edify，具体可参考 Android 官网对 [Edify](https://source.android.com/devices/tech/ota/nonab/inside_packages) 语法的介绍。
 
-- update-script 脚本常用语法：
+###### 3.2.2.2.1 update-script 脚本常用语法：
+
 1. abort([msg])：使用可选的 msg 立即中止脚本执行。如果用户开启了文本显示功能，msg 将出现在恢复日志和屏幕上。
 2. assert(condition)：如果 condition 参数的计算结果为 False，则停止脚本执行，否则继续执行脚本。
 3. apply_patch_space(bytes)：用于差分升级脚本中，如果至少有 bytes 个字节的暂存空间可用于打二进制补丁程序，则返回 True。
@@ -259,89 +281,93 @@ update-script 脚本格式是 edify，具体可参考 Android 官网对 [Edify](
 5. package_extract_file(srcfile_path,desfile_paht)：srcfile_path，要提取的文件，desfile_path，提取文件的目标位置。示例：package_extract_file(“boot.img”,”/tmp/boot.img”)将升级包中的 boot.img 文件拷贝到内存文件系统的 /tmp 下。
 6. getprop(key)：通过指定 key 的值来获取对应的属性信息。示例：getprop(“ro.product.device”) 获取 ro.product.device 的属性值。
 
-- qualcomm 整包 updater-script 脚本执行流程分析：
-```
-(!less_than_int(1526288656, getprop("ro.build.date.utc"))) || abort("E3003: Can't install this package (Mon May 14 17:04:16 CST 2018) over newer build (" + getprop("ro.build.date") + ").");
-getprop("ro.product.device") == "%s" || '
-           'abort("E%d: This package is for \\"%s\\" devices; '
-           'this is a \\"" + getprop("ro.product.device") + "\\".");')
-ui_print("Target: "); // 可获取 ro.build.fingerprint 属性来判断
-show_progress(0.750000, 0);
-ui_print("Patching system image unconditionally...");
-block_image_update("/dev/block/bootdevice/by-name/system", package_extract_file("system.transfer.list"), "system.new.dat", "system.patch.dat") ||
-  abort("E1001: Failed to update system image.");
-show_progress(0.050000, 5);
-package_extract_file("boot.img", "/dev/block/bootdevice/by-name/boot");
-show_progress(0.200000, 10);
+###### 3.2.2.2.2 qualcomm 整包 updater-script 脚本执行流程分析：
 
-# ---- radio update tasks ----
+  ```
+  (!less_than_int(1526288656, getprop("ro.build.date.utc"))) || abort("E3003: Can't install this package (Mon May 14 17:04:16 CST 2018) over newer build (" + getprop("ro.build.date") + ").");
+  getprop("ro.product.device") == "%s" || '
+             'abort("E%d: This package is for \\"%s\\" devices; '
+             'this is a \\"" + getprop("ro.product.device") + "\\".");')
+  ui_print("Target: "); // 可获取 ro.build.fingerprint 属性来判断
+  show_progress(0.750000, 0);
+  ui_print("Patching system image unconditionally...");
+  block_image_update("/dev/block/bootdevice/by-name/system", package_extract_file("system.transfer.list"), "system.new.dat", "system.patch.dat") ||
+    abort("E1001: Failed to update system image.");
+  show_progress(0.050000, 5);
+  package_extract_file("boot.img", "/dev/block/bootdevice/by-name/boot");
+  show_progress(0.200000, 10);
 
-ui_print("Patching firmware images...");
-ifelse(msm.boot_update("main"), (
-package_extract_file("firmware-update/cmnlib64.mbn", "/dev/block/bootdevice/by-name/cmnlib64");
-package_extract_file("firmware-update/splash.img", "/dev/block/bootdevice/by-name/splash");
-package_extract_file("firmware-update/cmnlib.mbn", "/dev/block/bootdevice/by-name/cmnlib");
-package_extract_file("firmware-update/rpm.mbn", "/dev/block/bootdevice/by-name/rpm");
-package_extract_file("firmware-update/tz.mbn", "/dev/block/bootdevice/by-name/tz");
-package_extract_file("firmware-update/mdtp.img", "/dev/block/bootdevice/by-name/mdtp");
-package_extract_file("firmware-update/lksecapp.mbn", "/dev/block/bootdevice/by-name/lksecapp");
-package_extract_file("firmware-update/sbl1.mbn", "/dev/block/bootdevice/by-name/sbl1");
-package_extract_file("firmware-update/devcfg.mbn", "/dev/block/bootdevice/by-name/devcfg");
-package_extract_file("firmware-update/keymaster.mbn", "/dev/block/bootdevice/by-name/keymaster");
-), "");
+  # ---- radio update tasks ----
 
-msm.boot_update("finalize");
-package_extract_file("firmware-update/adspso.bin", "/dev/block/bootdevice/by-name/dsp");
-set_progress(1.000000);
+  ui_print("Patching firmware images...");
+  ifelse(msm.boot_update("main"), (
+  package_extract_file("firmware-update/cmnlib64.mbn", "/dev/block/bootdevice/by-name/cmnlib64");
+  package_extract_file("firmware-update/splash.img", "/dev/block/bootdevice/by-name/splash");
+  package_extract_file("firmware-update/cmnlib.mbn", "/dev/block/bootdevice/by-name/cmnlib");
+  package_extract_file("firmware-update/rpm.mbn", "/dev/block/bootdevice/by-name/rpm");
+  package_extract_file("firmware-update/tz.mbn", "/dev/block/bootdevice/by-name/tz");
+  package_extract_file("firmware-update/mdtp.img", "/dev/block/bootdevice/by-name/mdtp");
+  package_extract_file("firmware-update/lksecapp.mbn", "/dev/block/bootdevice/by-name/lksecapp");
+  package_extract_file("firmware-update/sbl1.mbn", "/dev/block/bootdevice/by-name/sbl1");
+  package_extract_file("firmware-update/devcfg.mbn", "/dev/block/bootdevice/by-name/devcfg");
+  package_extract_file("firmware-update/keymaster.mbn", "/dev/block/bootdevice/by-name/keymaster");
+  ), "");
 
-```
+  msm.boot_update("finalize");
+  package_extract_file("firmware-update/adspso.bin", "/dev/block/bootdevice/by-name/dsp");
+  set_progress(1.000000);
+  ```
 1. 比较时间戳：如果升级包较旧则终止脚本的执行，具体实现参考 edify_generator.py 下调用的 [AssertOlderBuild](http://androidxref.com/8.0.0_r4/xref/build/tools/releasetools/edify_generator.py#137) 方法。
+
 2. 匹配设备信息：如果和当前的设备信息不一致，则停止脚本的执行，流程实现参考 ota_from_target_files.py 下调用的  [AppendAssertions](http://androidxref.com/8.0.0_r4/xref/build/make/tools/releasetools/ota_from_target_files.py#AppendAssertions) 方法：
-```
-def WriteFullOTAPackage(input_zip, output_zip):
-  # TODO: how to determine this?  We don't know what version it will
-  # be installed on top of. For now, we expect the API just won't
-  # change very often. Similarly for fstab, it might have changed
-  # in the target build.
-  script = edify_generator.EdifyGenerator(3, OPTIONS.info_dict)
 
-  recovery_mount_options = OPTIONS.info_dict.get("recovery_mount_options")
-  oem_props = OPTIONS.info_dict.get("oem_fingerprint_properties")
-  oem_dicts = None
-  if oem_props:
-    oem_dicts = _LoadOemDicts(script, recovery_mount_options)
+   ```
+   def WriteFullOTAPackage(input_zip, output_zip):
+     # TODO: how to determine this?  We don't know what version it will
+     # be installed on top of. For now, we expect the API just won't
+     # change very often. Similarly for fstab, it might have changed
+     # in the target build.
+     script = edify_generator.EdifyGenerator(3, OPTIONS.info_dict)
 
-  target_fp = CalculateFingerprint(oem_props, oem_dicts and oem_dicts[0],
-                                   OPTIONS.info_dict)
-  metadata = {
-      "post-build": target_fp,
-      "pre-device": GetOemProperty("ro.product.device", oem_props,
-                                   oem_dicts and oem_dicts[0],
-                                   OPTIONS.info_dict),
-      "post-timestamp": GetBuildProp("ro.build.date.utc", OPTIONS.info_dict),
-  }
+     recovery_mount_options = OPTIONS.info_dict.get("recovery_mount_options")
+     oem_props = OPTIONS.info_dict.get("oem_fingerprint_properties")
+     oem_dicts = None
+     if oem_props:
+       oem_dicts = _LoadOemDicts(script, recovery_mount_options)
 
-  device_specific = common.DeviceSpecificParams(
-      input_zip=input_zip,
-      input_version=OPTIONS.info_dict["recovery_api_version"],
-      output_zip=output_zip,
-      script=script,
-      input_tmp=OPTIONS.input_tmp,
-      metadata=metadata,
-      info_dict=OPTIONS.info_dict)
+     target_fp = CalculateFingerprint(oem_props, oem_dicts and oem_dicts[0],
+                                      OPTIONS.info_dict)
+     metadata = {
+         "post-build": target_fp,
+         "pre-device": GetOemProperty("ro.product.device", oem_props,
+                                      oem_dicts and oem_dicts[0],
+                                      OPTIONS.info_dict),
+         "post-timestamp": GetBuildProp("ro.build.date.utc", OPTIONS.info_dict),
+     }
 
-  assert HasRecoveryPatch(input_zip)
+     device_specific = common.DeviceSpecificParams(
+         input_zip=input_zip,
+         input_version=OPTIONS.info_dict["recovery_api_version"],
+         output_zip=output_zip,
+         script=script,
+         input_tmp=OPTIONS.input_tmp,
+         metadata=metadata,
+         info_dict=OPTIONS.info_dict)
 
-  metadata["ota-type"] = "BLOCK"
+     assert HasRecoveryPatch(input_zip)
 
-  #升级前对升级包时间和设备辨识进行判断
-  ts = GetBuildProp("ro.build.date.utc", OPTIONS.info_dict)
-  ts_text = GetBuildProp("ro.build.date", OPTIONS.info_dict)
-  script.AssertOlderBuild(ts, ts_text)
+     metadata["ota-type"] = "BLOCK"
 
-  AppendAssertions(script, OPTIONS.info_dict, oem_dicts)
-  device_specific.FullOTA_Assertions()
-```
+     #升级前对升级包时间和设备辨识进行判断
+     ts = GetBuildProp("ro.build.date.utc", OPTIONS.info_dict)
+     ts_text = GetBuildProp("ro.build.date", OPTIONS.info_dict)
+     script.AssertOlderBuild(ts, ts_text)
+
+     AppendAssertions(script, OPTIONS.info_dict, oem_dicts)
+     device_specific.FullOTA_Assertions()
+   ```
+
+
 3. 显示进度条：如果以上两步匹配则开始显示升级进度条。
 4. 将升级包中的文件写入到对应的分区，先升级 system，再升级 boot。
 5. 升级 modem 分区，将 modem 分区放在 /device/qcom/<target>/RADIO 下，将需要升级的分区写入 radio 下的 filesmap 进行匹配。
