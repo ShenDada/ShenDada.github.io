@@ -55,7 +55,6 @@ Recovery 通过 /cache/recovery/ 目录下的文件与 main system 通信,常使
 #### 2.1.2 通过BCB（Bootloader Control Block）
 
 BCB 是 bootloader 与 Recovery 的通信接口，也是 Bootloader 与 Main system 之间的通信接口。存储在 flash 中的 MISC 分区，大小为 2-KiB，其本身就是一个结构体，实现参考 [bootloader_message.h](http://androidxref.com/8.0.0_r4/xref/bootable/recovery/bootloader_message/include/bootloader_message/bootloader_message.h#63)，具体成员以及各成员含义如下（Android O）：
-
 ```
 struct bootloader_message {
     char command[32];
@@ -103,7 +102,6 @@ struct bootloader_message {
 - 流程 3-2：recovery 从 cache/recovery/command 中获取操作命令，并存放 recovery 过程的相关信息和 log。
 - 按键进入：从 reboot 到 Recovery 服务 从 Bootloader 开始如果检测到组合键按下，就以 Recovery 模式开始启动启动镜像是 recovery.img。这个镜像同 boot.img 类似，也包含了标准的内核和根文件系统。其后就与正常的启动系统类似，也是启动内核，然后启动文件系统。在进入文件系统后会执行 init，init 的配置文件是 recovery 下的 [init.rc](http://androidxref.com/8.0.0_r4/xref/bootable/recovery/etc/init.rc)，启动 recovery（/sbin/recovery）服务。
 - 服务重启异常进入：服务在4分钟内重启次数超过4次，则重启手机进入recovery模式，参考 [service.cpp](http://androidxref.com/8.0.0_r4/xref/system/core/init/service.cpp#Reap)
-
 ```
     // If we crash > 4 times in 4 minutes, reboot into recovery.
     boot_clock::time_point now = boot_clock::now();
@@ -232,7 +230,6 @@ execv(binary,args)，其执行的 update-binary 具体实现源码可参考 [upd
   int find_err = FindEntry(za, script_name, &script_entry);
 ```
 4. Configure edify's functions：注册脚本中的语句处理函数，即识别脚本中命令的函数。主要有以下几类:
-
 ```
   RegisterBuiltins();   
   //注册程序中控制流程的语句，如 ifelse、assert、abort、stdout 等
@@ -263,7 +260,6 @@ update-script 脚本格式是 edify，具体可参考 Android 官网对 [Edify](
 6. getprop(key)：通过指定 key 的值来获取对应的属性信息。示例：getprop(“ro.product.device”) 获取 ro.product.device 的属性值。
 
 - qualcomm 整包 updater-script 脚本执行流程分析：
-
 ```
 (!less_than_int(1526288656, getprop("ro.build.date.utc"))) || abort("E3003: Can't install this package (Mon May 14 17:04:16 CST 2018) over newer build (" + getprop("ro.build.date") + ").");
 getprop("ro.product.device") == "%s" || '
@@ -301,7 +297,6 @@ set_progress(1.000000);
 ```
 1. 比较时间戳：如果升级包较旧则终止脚本的执行，具体实现参考 edify_generator.py 下调用的 [AssertOlderBuild](http://androidxref.com/8.0.0_r4/xref/build/tools/releasetools/edify_generator.py#137) 方法。
 2. 匹配设备信息：如果和当前的设备信息不一致，则停止脚本的执行，流程实现参考 ota_from_target_files.py 下调用的  [AppendAssertions](http://androidxref.com/8.0.0_r4/xref/build/make/tools/releasetools/ota_from_target_files.py#AppendAssertions) 方法：
-
 ```
 def WriteFullOTAPackage(input_zip, output_zip):
   # TODO: how to determine this?  We don't know what version it will
@@ -347,7 +342,6 @@ def WriteFullOTAPackage(input_zip, output_zip):
   AppendAssertions(script, OPTIONS.info_dict, oem_dicts)
   device_specific.FullOTA_Assertions()
 ```
-
 3. 显示进度条：如果以上两步匹配则开始显示升级进度条。
 4. 将升级包中的文件写入到对应的分区，先升级 system，再升级 boot。
 5. 升级 modem 分区，将 modem 分区放在 /device/qcom/<target>/RADIO 下，将需要升级的分区写入 radio 下的 filesmap 进行匹配。
@@ -361,6 +355,11 @@ def WriteFullOTAPackage(input_zip, output_zip):
 ![image](http://ww1.sinaimg.cn/large/005xWQEggy1fuihk3iwfgj308x0geglw.jpg)
 
 ## 四、non-A/B OTA 升级流程总结
+
+1. OTA 主要工作分为 **在线下载升级包、本地升级、升级完成后的功能验证 **三部分。
+2. 介绍 Android 系统启动的三种模式  **fastboot、recovery、normal boot** 。
+3. 深入三种模式是如何进行通信来传递 message command，着重介绍 **BCB** 和 **/cache/recovery 下的文件信息** 两种方式。
+4. 先介绍应用层是如何将在线下载的升级包参数传递到底层，再详细分析底层 recovery 阶段是如何完成升级过程，最后完成升级是如何处理传递进来的的 message command 的。
 
 
 
