@@ -141,6 +141,7 @@ struct bootloader_message {
 #### 3.1.2 使用 adb 指令调试安装升级包
 
 - 将升级包 push 进 data 分区，进入 recovery 模式：
+
 1. To initiate recovery, run the following adb commands:
 
    ```
@@ -163,8 +164,8 @@ struct bootloader_message {
    adb shell sync
    adb reboot recovery
    ```
-   The device reboots, updates all images, and reboots again. The logs for the last 
-   recovery are located under /cache/recovery.
+
+   The device reboots, updates all images, and reboots again. The logs for the last recovery are located under /cache/recovery.
 
 ### 3.2 recovery 阶段升级服务流程
 
